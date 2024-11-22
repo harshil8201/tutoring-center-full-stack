@@ -55,9 +55,64 @@
         font-weight: bold;
         color: #388e3c;
       }
+
+      .form-container {
+        max-width: 500px;
+        margin: 30px auto;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+      }
+
+      .form-container h2 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .form-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .form-container input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      .form-container button {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #388e3c;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .form-container button:hover {
+        background-color: #2e7d32;
+      }
     </style>
   </head>
   <body>
+    <div class="form-container">
+      <h2>Add a New Course</h2>
+      <form action="/add-course" method="POST">
+        <input type="text" name="name" placeholder="Course Name" required />
+        <input type="number" name="price" placeholder="Price" required />
+        <input type="text" name="img" placeholder="Image URL" required />
+        <button type="submit">Add Course</button>
+      </form>
+    </div>
+
     <h1>Available Courses</h1>
     <div class="course-container">
       <% courses.forEach(course => { %>
