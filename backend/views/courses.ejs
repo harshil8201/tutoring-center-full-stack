@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutoring Center Courses</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        padding: 20px;
+        color: #333;
+      }
+
+      .course-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .course-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        text-align: center;
+      }
+
+      .course-card img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 15px;
+      }
+
+      .course-card h3 {
+        font-size: 20px;
+        color: #333;
+      }
+
+      .course-card p {
+        font-size: 16px;
+        color: #555;
+      }
+
+      .course-card .price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #388e3c;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Available Courses</h1>
+    <div class="course-container">
+      <% courses.forEach(course => { %>
+      <div id="<%= course._id %>" class="course-card">
+        <img src="<%= course.img %>" alt="<%= course.name %>" />
+        <h3><%= course.name %></h3>
+        <p class="price">$<%= course.price %></p>
+      </div>
+      <% }) %>
+    </div>
+  </body>
+</html>
