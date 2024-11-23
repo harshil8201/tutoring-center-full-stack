@@ -5,12 +5,20 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,
   },
   img: {
-    type: String,
+    type: String, // Optional: To store the image URL if provided
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // References the instructor who created the course
     required: true,
   },
 });

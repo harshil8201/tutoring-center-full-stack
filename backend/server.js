@@ -1,18 +1,22 @@
-/* 
-to start mongo db server, 
-run this command in mac: “sudo mongod --dbpath=/Users/harshilpatel/data/db”  
-*/
-
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const dbConfig = require("./config/db");
+const path = require("path");
 
 const app = express();
+
+// Middleware
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files (CSS, JS, images, etc.)
+app.use(express.static(path.join(__dirname, "public")));
 
 // Set EJS as view engine
 app.set("view engine", "ejs");
@@ -21,12 +25,16 @@ app.set("view engine", "ejs");
 dbConfig();
 
 // Routes
-app.use("/api/courses", courseRoutes);
+app.use("/auth", authRoutes);
+app.use("/courses", courseRoutes);
+
+// Home route (default route)
+app.get("/", (req, res) => {
+  res.render("signup"); // Render 'index.ejs' from the 'views' folder
+});
 
 // Server Setup
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(
-    `Server is running on port ${PORT}\ncheck course at: http://localhost:${PORT}/api/courses`
-  );
+  console.log(`Server is running on port ${PORT}`);
 });

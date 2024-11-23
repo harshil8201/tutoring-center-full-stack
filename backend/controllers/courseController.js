@@ -1,41 +1,68 @@
 const Course = require("../models/courseModel");
 
-// Fetch all courses
-exports.getCourses = async (req, res) => {
+exports.getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().sort({ _id: -1 }); // Sort by _id in ascending order
-    res.render("courses", { courses }); // Render 'courses.ejs' view
+    // Fetch all courses and populate the createdBy field with the user's email
+    const courses = await Course.find().populate("createdBy", "email");
+    res.render("courses", { courses });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err); // Log error for debugging
+    res.status(500).send({ error: "Error retrieving courses" });
   }
 };
 
-// Add a new course (for API)
 exports.createCourse = async (req, res) => {
-  const { name, price, img } = req.body;
-
-  // Log the incoming data
-  console.log("Course Data Received:", { name, price, img });
-
-  const course = new Course({
-    name,
-    price,
-    img,
-  });
-
-  try {
-    await course.save(); // Ensure course is saved
-    res.redirect("/api/courses"); // Redirect to the courses page to reload and show updated list
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  // Ensure only instructors can create courses
+  if (req.user.role !== "instructor") {
+    return res
+      .status(403)
+      .send({ error: "Only instructors can create courses" });
   }
 
-  // try {
-  //   course.save();
-  //   const courses = await Course.find();
-  //   res.render("courses", { courses }); // Render 'courses.ejs' view
-  //   //res.status(201).json(courses);
-  // } catch (err) {
-  //   res.status(400).json({ message: err.message });
-  // }
+  const { name, description, price, img } = req.body; // Ensure fields are passed in the body
+
+  // Validate the required fields
+  if (!name || !description || !price) {
+    return res
+      .status(400)
+      .send({ error: "All fields (name, description, price) are required" });
+  }
+
+  try {
+    const newCourse = new Course({
+      name,
+      description, // Description should be passed from the form
+      price,
+      img, // Image URL is optional, can be empty
+      createdBy: req.user._id, // Use user ID from authenticated user
+    });
+
+    // Save the new course to the database
+    await newCourse.save();
+    res.redirect("/courses"); // Redirect to the list of courses after creation
+  } catch (err) {
+    console.error(err); // Log error for debugging
+    res.status(500).send({ error: "Error creating course" });
+  }
+};
+
+exports.deleteCourse = async (req, res) => {
+  // Ensure only instructors can delete courses
+  if (req.user.role !== "instructor") {
+    return res
+      .status(403)
+      .send({ error: "Only instructors can delete courses" });
+  }
+
+  const { id } = req.params; // Get course ID from the URL params
+
+  try {
+    const course = await Course.findByIdAndDelete(id);
+    if (!course) return res.status(404).send({ error: "Course not found" });
+
+    res.redirect("/courses"); // Redirect after deletion
+  } catch (err) {
+    console.error(err); // Log error for debugging
+    res.status(500).send({ error: "Error deleting course" });
+  }
 };

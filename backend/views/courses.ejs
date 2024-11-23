@@ -77,7 +77,8 @@
         gap: 15px;
       }
 
-      .form-container input {
+      .form-container input,
+      .form-container textarea {
         width: 100%;
         padding: 10px;
         font-size: 16px;
@@ -105,8 +106,13 @@
   <body>
     <div class="form-container">
       <h2>Add a New Course</h2>
-      <form action="/api/courses" method="POST">
+      <form action="/courses" method="POST">
         <input type="text" name="name" placeholder="Course Name" required />
+        <textarea
+          name="description"
+          placeholder="Course Description"
+          required
+        ></textarea>
         <input type="number" name="price" placeholder="Price" required />
         <input type="text" name="img" placeholder="Image URL" required />
         <button type="submit">Add Course</button>
@@ -119,7 +125,17 @@
       <div id="<%= course._id %>" class="course-card">
         <img src="<%= course.img %>" alt="<%= course.name %>" />
         <h3><%= course.name %></h3>
+        <p><strong>Description:</strong> <%= course.description %></p>
+        <!-- Added description here -->
         <p class="price">$<%= course.price %></p>
+        <!-- Delete button -->
+        <form
+          action="/courses/<%= course._id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
       </div>
       <% }) %>
     </div>
